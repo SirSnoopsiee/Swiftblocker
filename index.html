@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restricted | SwiftBlocker</title>
+    <title>Restricted</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
@@ -48,7 +47,6 @@
             width: clamp(180px, 40vw, 320px);
             height: auto;
             filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.4));
-            /* Rounded corners fix */
             border-radius: 28px;
             object-fit: cover;
         }
@@ -80,12 +78,12 @@
             line-height: 1.5;
             max-width: 520px;
             margin-bottom: 40px;
+            backdrop-filter: blur(10px);
         }
 
         .url-target {
             color: #38bdf8;
             font-weight: 700;
-            /* Prevents long URLs from breaking the pill layout */
             word-break: break-all;
         }
 
@@ -127,20 +125,15 @@
             transform: translateY(-2px);
         }
 
-        #btn-info-container {
-            display: none;
-            width: 100%;
-            justify-content: center;
-        }
-
-        .btn-secondary {
+        #btn-info {
+            display: none; /* Hidden by default */
             background: rgba(255, 255, 255, 0.04);
             color: #64748b;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
         }
 
-        .btn-secondary:hover {
+        #btn-info:hover {
             background: rgba(255, 255, 255, 0.08);
             color: #f1f5f9;
         }
@@ -149,8 +142,8 @@
             display: none;
             width: 100%;
             max-width: 450px;
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(15px);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
             padding: 24px;
             border-radius: 30px;
             margin-top: 20px;
@@ -160,27 +153,28 @@
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 13px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 8px;
         }
 
-        .label { color: #475569; font-weight: 700; text-transform: uppercase; }
-        .value { color: #38bdf8; font-family: monospace; word-break: break-all; }
-        .footer { margin-top: 50px; font-size: 10px; color: #334155; text-transform: uppercase; letter-spacing: 4px; font-weight: 800; }
+        .info-row:last-child { border: none; }
+        .label { color: #475569; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .value { color: #38bdf8; font-family: monospace; word-break: break-all; text-align: right; }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="logo-wrapper">
-            <img src="https://raw.githubusercontent.com/SirSnoopsiee/Swiftblocker/refs/heads/main/SwiftBlockerAssets/swiftlogo(notext).png" alt="SwiftBlocker" class="logo" onerror="this.style.display='none'">
+            <img src="https://raw.githubusercontent.com/SirSnoopsiee/Swiftblocker/refs/heads/main/SwiftBlockerAssets/swiftlogo(notext).png" alt="Logo" class="logo" id="logo-img">
         </div>
 
         <div class="status-pill">
@@ -188,7 +182,7 @@
         </div>
 
         <p class="description-pill">
-            Access to <span id="display-url" class="url-target">this site</span> is blocked. Please check with your administrator if you believe this is an error.
+            Access to <span id="display-target" class="url-target">this content</span> is restricted. Check with your administrator for more information.
         </p>
 
         <div class="btn-stack">
@@ -196,68 +190,66 @@
                 <i class="fas fa-arrow-left"></i> Go Back
             </button>
 
-            <div id="btn-info-container">
-                <button class="pill-btn btn-secondary" onclick="toggleInfo()">
-                    <i class="fas fa-circle-info"></i> More Info
-                </button>
-            </div>
+            <button id="btn-info" class="pill-btn" onclick="toggleInfo()">
+                <i class="fas fa-circle-info"></i> More Info
+            </button>
         </div>
 
         <div id="more-info">
             <div class="info-row">
-                <span class="label">Blocked URL:</span>
-                <span class="value" id="url-details">N/A</span>
+                <span class="label">Type:</span>
+                <span id="info-type" class="value">N/A</span>
             </div>
             <div class="info-row">
-                <span class="label">List</span>
-                <span class="value">SwiftBlocker filters</span>
+                <span class="label">Data:</span>
+                <span id="info-detail" class="value">N/A</span>
             </div>
         </div>
-
-        <div class="footer"></div>
     </div>
 
     <script>
-        function toggleInfo() {
-            const info = document.getElementById('more-info');
-            const isHidden = window.getComputedStyle(info).display === 'none';
-            info.style.display = isHidden ? 'block' : 'none';
+        // Use textContent everywhere to block XSS exploits
+        function safeSet(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
         }
 
-        function sanitize(text) {
-            const element = document.createElement('div');
-            element.textContent = text;
-            return element.innerHTML;
+        function toggleInfo() {
+            const info = document.getElementById('more-info');
+            info.style.display = (info.style.display === 'block') ? 'none' : 'block';
         }
 
         window.onload = function() {
-            
-            const backBtn = document.getElementById('btn-back');
             if (window.history.length > 1) {
-                backBtn.style.display = 'inline-flex';
+                document.getElementById('btn-back').style.display = 'inline-flex';
             }
 
-            
-            try {
-                const params = new URLSearchParams(window.location.search);
-                const rawUrl = params.get('url');
+            const params = new URLSearchParams(window.location.search);
+            const rawUrl = params.get('url');
+            const rawKeyword = params.get('keyword');
 
-                if (rawUrl && rawUrl.trim() !== "") {
-                    
-                    const cleanUrl = rawUrl.replace(/^https?:\/\//, ''); 
-                    
-                    document.getElementById('display-url').textContent = cleanUrl;
-                    document.getElementById('url-details').textContent = rawUrl;
-                    
-                    
-                    document.getElementById('btn-info-container').style.display = 'flex';
+            // Only show the info button if we actually have data to show
+            if (rawUrl || rawKeyword) {
+                document.getElementById('btn-info').style.display = 'inline-flex';
+                
+                if (rawKeyword) {
+                    safeSet('display-target', `sites containing "${rawKeyword}"`);
+                    safeSet('info-type', "Keyword Filter");
+                    safeSet('info-detail', rawKeyword);
+                } else {
+                    const cleanUrl = rawUrl.replace(/^https?:\/\//, '').trim();
+                    safeSet('display-target', cleanUrl);
+                    safeSet('info-type', "Domain Block");
+                    safeSet('info-detail', rawUrl);
                 }
-            } catch (err) {
-                console.error("UI Logic Error:", err);
-                document.getElementById('display-url').textContent = "the requested page";
+            } else {
+                safeSet('display-target', "the requested page");
             }
+        };
+
+        document.getElementById('logo-img').onerror = function() {
+            this.style.display = 'none';
         };
     </script>
 </body>
-
 </html>
