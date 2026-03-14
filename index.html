@@ -242,7 +242,7 @@
         <h1>Content has been blocked</h1>
 
         <p class="description-pill">
-            SwiftBlocker has blocked<span id="display-target" class="url-target">url not found</span>.
+            SwiftBlocker has blocked <span id="display-target" class="url-target">url not found</span>.
         </p>
 
         <div class="btn-stack">
@@ -318,13 +318,13 @@
                 document.getElementById('btn-info').style.display = 'inline-flex';
 
                 if (rawKeyword) {
-                    safeSet('display-target', `content matching "${rawKeyword}"`);
+                    safeSet('display-target', `keyword blocked"${rawKeyword}"`);
                     safeSet('info-type', "Keyword Filter");
                     safeSet('info-detail', rawKeyword);
                 } else if (rawUrl) {
                     const cleanUrl = rawUrl.replace(/^https?:\/\//i, '').split('/')[0];
                     safeSet('display-target', cleanUrl || "this domain");
-                    safeSet('info-type', "Domain Restriction");
+                    safeSet('info-type', "Domain");
                     safeSet('info-detail', rawUrl);
                 }
             }
