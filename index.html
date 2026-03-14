@@ -56,7 +56,6 @@
             flex-direction: column;
             align-items: center;
             animation: fadeIn 0.6s ease-out;
-
             background: var(--glass);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
@@ -66,21 +65,11 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .logo-wrapper {
-            margin-bottom: 24px;
-        }
-
+        .logo-wrapper { margin-bottom: 24px; }
         .logo {
             width: clamp(160px, 35vw, 300px);
             height: auto;
@@ -159,9 +148,7 @@
             box-shadow: 0 8px 15px rgba(0, 210, 255, 0.2);
         }
 
-        #btn-back:hover {
-            transform: scale(1.05) translateY(-3px);
-        }
+        #btn-back:hover { transform: scale(1.05) translateY(-3px); }
 
         #btn-info {
             background: rgba(255, 255, 255, 0.05);
@@ -188,15 +175,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: scale(0.98) translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .info-row {
@@ -208,10 +188,7 @@
             padding-bottom: 8px;
         }
 
-        .info-row:last-child {
-            border: none;
-        }
-
+        .info-row:last-child { border: none; }
         .label {
             color: var(--muted);
             font-weight: 700;
@@ -242,7 +219,7 @@
         <h1>Content has been blocked</h1>
 
         <p class="description-pill">
-            SwiftBlocker has blocked <span id="display-target" class="url-target">url not found</span>.
+            SwiftBlocker has blocked <span id="display-target" class="url-target">URL not found</span>.
         </p>
 
         <div class="btn-stack">
@@ -265,7 +242,7 @@
                 <span id="info-type" class="value">N/A</span>
             </div>
             <div class="info-row">
-                <span class="label">Blocked keyword/website url:</span>
+                <span class="label">Blocked Keyword/URL:</span>
                 <span id="info-detail" class="value">N/A</span>
             </div>
         </div>
@@ -273,10 +250,12 @@
 
     <script>
         const DEFAULT_REDIRECT = "https://github.com/SirSnoopsiee/Swiftblocker";
-        // Prevent layout exploits by truncating excessively long queries
+
         function sanitizeInput(str, maxLength = 150) {
             if (!str) return null;
-            return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+            // Trim whitespace and limit length to prevent overflow exploits
+            let sanitized = str.trim();
+            return sanitized.length > maxLength ? sanitized.substring(0, maxLength) + "..." : sanitized;
         }
 
         function safeSet(id, text) {
@@ -286,12 +265,12 @@
 
         function toggleInfo() {
             const info = document.getElementById('more-info');
-            const isVisible = info.style.display === 'block';
-            info.style.display = isVisible ? 'none' : 'block';
+            info.style.display = (info.style.display === 'block') ? 'none' : 'block';
         }
 
         function handleBack() {
-            if (window.history.length > 1) {
+            // Using document.referrer is more reliable for checking if we can actually go back
+            if (document.referrer && document.referrer !== window.location.href) {
                 window.history.back();
             } else {
                 window.location.replace(DEFAULT_REDIRECT);
@@ -300,33 +279,33 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
-
-            // Apply sanitization to block long-string UI exploits
             const rawUrl = sanitizeInput(params.get('url'), 200);
             const rawKeyword = sanitizeInput(params.get('keyword'), 100);
 
+            // If nothing is provided, redirect to home
             if (!rawUrl && !rawKeyword) {
                 window.location.replace(DEFAULT_REDIRECT);
                 return;
             }
 
-            if (window.history.length > 1) {
+            // Always show back button if there is a referrer or history
+            if (document.referrer || window.history.length > 1) {
                 document.getElementById('btn-back').style.display = 'inline-flex';
             }
 
-            if (rawUrl || rawKeyword) {
-                document.getElementById('btn-info').style.display = 'inline-flex';
+            document.getElementById('btn-info').style.display = 'inline-flex';
 
-                if (rawKeyword) {
-                    safeSet('display-target', `the keyword"${rawKeyword}"`);
-                    safeSet('info-type', "Keyword Filter");
-                    safeSet('info-detail', rawKeyword);
-                } else if (rawUrl) {
-                    const cleanUrl = rawUrl.replace(/^https?:\/\//i, '').split('/')[0];
-                    safeSet('display-target', cleanUrl || "this domain");
-                    safeSet('info-type', "Domain");
-                    safeSet('info-detail', rawUrl);
-                }
+            if (rawKeyword) {
+                // Fixed grammar: Added a space before the keyword quotes
+                safeSet('display-target', `the keyword "${rawKeyword}"`);
+                safeSet('info-type', "Keyword Filter");
+                safeSet('info-detail', rawKeyword);
+            } else if (rawUrl) {
+                // Cleaner URL extraction
+                let cleanUrl = rawUrl.replace(/^https?:\/\//i, '').split('/')[0];
+                safeSet('display-target', cleanUrl || "this domain");
+                safeSet('info-type', "Domain Block");
+                safeSet('info-detail', rawUrl);
             }
         });
 
