@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restricted Content</title>
+    <title>SwiftBlocker - Restricted Content</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+
         :root {
-            --primary: #38bdf8;
-            --bg-dark: #020617;
-            --card-bg: rgba(15, 23, 42, 0.85);
+            --accent-blue: #00d2ff;
+            --glass: rgba(15, 20, 35, 0.5);
+            --glass-dark: rgba(0, 0, 0, 0.3);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+            --muted: #cbd5e1;
+            --bg-fallback: url('https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg');
         }
 
         * {
@@ -19,15 +26,26 @@
         }
 
         body {
-            background: radial-gradient(circle at center, #1e293b 0%, var(--bg-dark) 100%);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text);
+            background-color: #05070a;
             padding: 20px;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)), var(--bg-fallback);
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
         }
 
         .container {
@@ -38,56 +56,75 @@
             flex-direction: column;
             align-items: center;
             animation: fadeIn 0.6s ease-out;
+
+            background: var(--glass);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            padding: 40px;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .logo-wrapper {
-            margin-bottom: 4vh;
+            margin-bottom: 24px;
         }
 
         .logo {
             width: clamp(160px, 35vw, 300px);
             height: auto;
-            filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.3));
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
             border-radius: 24px;
         }
 
         .status-pill {
-            display: inline-block;
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            padding: 10px 28px;
-            border-radius: 100px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
             margin-bottom: 24px;
+            color: var(--accent-blue);
         }
 
         h1 {
             font-size: clamp(22px, 5vw, 36px);
             font-weight: 800;
             letter-spacing: -0.5px;
-            color: var(--primary);
+            color: var(--text);
+            margin-bottom: 16px;
         }
 
         .description-pill {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            color: #94a3b8;
+            background: var(--glass-dark);
+            border: 1px solid var(--border);
+            color: var(--muted);
             font-size: clamp(14px, 3vw, 16px);
-            padding: 18px 30px;
-            border-radius: 24px;
+            padding: 20px;
+            border-radius: 20px;
             line-height: 1.6;
             max-width: 480px;
             margin-bottom: 35px;
-            backdrop-filter: blur(12px);
         }
 
         .url-target {
-            color: var(--primary);
-            font-weight: 600;
+            color: var(--accent-blue);
+            font-weight: 700;
             word-break: break-all;
         }
 
@@ -109,52 +146,57 @@
             padding: 14px 24px;
             border-radius: 100px;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
-            transition: all 0.2s ease;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             border: none;
         }
 
         #btn-back {
-            background-color: #2563eb;
-            color: #ffffff;
-            box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2);
+            background: var(--accent-blue);
+            color: #000000;
+            box-shadow: 0 8px 15px rgba(0, 210, 255, 0.2);
         }
 
         #btn-back:hover {
-            background-color: #1d4ed8;
-            transform: translateY(-2px);
+            transform: scale(1.05) translateY(-3px);
         }
 
         #btn-info {
             background: rgba(255, 255, 255, 0.05);
-            color: #cbd5e1;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
 
         #btn-info:hover {
             background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            transform: scale(1.05) translateY(-3px);
         }
 
         #more-info {
             display: none;
             width: 100%;
             max-width: 420px;
-            background: var(--card-bg);
-            backdrop-filter: blur(25px);
+            background: var(--glass-dark);
             padding: 20px;
             border-radius: 20px;
             margin-top: 20px;
             text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
             animation: slideUp 0.3s ease-out;
         }
 
         @keyframes slideUp {
-            from { opacity: 0; transform: scale(0.98) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from {
+                opacity: 0;
+                transform: scale(0.98) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .info-row {
@@ -162,15 +204,31 @@
             justify-content: space-between;
             margin-bottom: 10px;
             font-size: 13px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             padding-bottom: 8px;
         }
 
-        .info-row:last-child { border: none; }
-        .label { color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .value { color: var(--primary); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+        .info-row:last-child {
+            border: none;
+        }
+
+        .label {
+            color: var(--muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .value {
+            color: var(--accent-blue);
+            font-family: monospace;
+            word-break: break-all;
+            text-align: right;
+            max-width: 60%;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="logo-wrapper">
@@ -178,11 +236,13 @@
         </div>
 
         <div class="status-pill">
-            <h1>Restricted</h1>
+            <i class="fas fa-shield-halved"></i> SwiftBlocker
         </div>
 
+        <h1>Content Restricted</h1>
+
         <p class="description-pill">
-            Access to <span id="display-target" class="url-target">this content</span> has been blocked. Contact your system administrator for details.
+            SwiftBlocker has restricted access to <span id="display-target" class="url-target">url not found</span>.
         </p>
 
         <div class="btn-stack">
@@ -191,11 +251,15 @@
             </button>
 
             <button id="btn-info" class="pill-btn" onclick="toggleInfo()" style="display: none;">
-                <i class="fas fa-circle-info"></i> Connection Details
+                <i class="fas fa-circle-info"></i> More Details
             </button>
         </div>
 
         <div id="more-info">
+            <div class="info-row">
+                <span class="label">Module:</span>
+                <span class="value">SwiftBlocker Web Filter</span>
+            </div>
             <div class="info-row">
                 <span class="label">Policy:</span>
                 <span id="info-type" class="value">N/A</span>
@@ -208,8 +272,12 @@
     </div>
 
     <script>
-
         const DEFAULT_REDIRECT = "https://github.com/SirSnoopsiee/Swiftblocker";
+        // Prevent layout exploits by truncating excessively long queries
+        function sanitizeInput(str, maxLength = 150) {
+            if (!str) return null;
+            return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+        }
 
         function safeSet(id, text) {
             const el = document.getElementById(id);
@@ -232,30 +300,28 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
-            const rawUrl = params.get('url');
-            const rawKeyword = params.get('keyword');
 
-           
+            // Apply sanitization to block long-string UI exploits
+            const rawUrl = sanitizeInput(params.get('url'), 200);
+            const rawKeyword = sanitizeInput(params.get('keyword'), 100);
+
             if (!rawUrl && !rawKeyword) {
                 window.location.replace(DEFAULT_REDIRECT);
-                return; 
+                return;
             }
 
-           
             if (window.history.length > 1) {
                 document.getElementById('btn-back').style.display = 'inline-flex';
             }
 
-            
             if (rawUrl || rawKeyword) {
                 document.getElementById('btn-info').style.display = 'inline-flex';
-                
+
                 if (rawKeyword) {
                     safeSet('display-target', `content matching "${rawKeyword}"`);
                     safeSet('info-type', "Keyword Filter");
                     safeSet('info-detail', rawKeyword);
-                } else {
-                    
+                } else if (rawUrl) {
                     const cleanUrl = rawUrl.replace(/^https?:\/\//i, '').split('/')[0];
                     safeSet('display-target', cleanUrl || "this domain");
                     safeSet('info-type', "Domain Restriction");
@@ -264,10 +330,10 @@
             }
         });
 
-       
         document.getElementById('logo-img').onerror = function() {
             this.style.display = 'none';
         };
     </script>
 </body>
+
 </html>
