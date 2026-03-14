@@ -14,7 +14,6 @@
         }
 
         body {
-            /* Deep gradient for that modern security look */
             background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             display: flex;
@@ -23,14 +22,12 @@
             min-height: 100vh;
             color: #ffffff;
             padding: 20px;
-            /* Prevents scrollbars on small screens */
             overflow: hidden;
         }
 
         .container {
             text-align: center;
             width: 100%;
-            /* Flex-grow allows it to adjust, max-width keeps it readable on desktops */
             max-width: 600px;
             display: flex;
             flex-direction: column;
@@ -39,48 +36,59 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Large, Responsive Logo */
         .logo-wrapper {
-            margin-bottom: 5vh;
-            /* Responsive margin based on viewport height */
+            margin-bottom: 4vh;
         }
 
         .logo {
-            width: clamp(200px, 45vw, 380px);
-            /* Auto-adjusting size */
+            width: clamp(180px, 40vw, 320px);
             height: auto;
             filter: drop-shadow(0 0 30px rgba(59, 130, 246, 0.4));
-            transition: transform 0.4s ease;
+            /* Rounded corners fix */
+            border-radius: 28px;
+            object-fit: cover;
+        }
+
+        .status-pill {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: #38bdf8;
+            padding: 8px 24px;
+            border-radius: 100px;
+            margin-bottom: 20px;
         }
 
         h1 {
-            color: #38bdf8;
-            font-size: clamp(36px, 8vw, 64px);
+            font-size: clamp(24px, 6vw, 42px);
             font-weight: 800;
-            margin-bottom: 12px;
-            letter-spacing: -2px;
+            letter-spacing: -1px;
+            margin: 0;
         }
 
-        .description {
+        .description-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: #94a3b8;
-            font-size: clamp(15px, 3.5vw, 19px);
+            font-size: clamp(14px, 3vw, 16px);
+            padding: 14px 32px;
+            border-radius: 50px;
+            line-height: 1.5;
+            max-width: 520px;
             margin-bottom: 40px;
-            line-height: 1.6;
-            max-width: 450px;
         }
 
-        /* Pill Buttons Stack */
+        .url-target {
+            color: #38bdf8;
+            font-weight: 700;
+            /* Prevents long URLs from breaking the pill layout */
+            word-break: break-all;
+        }
+
         .btn-stack {
             display: flex;
             flex-direction: column;
@@ -107,10 +115,8 @@
             outline: none;
         }
 
-        /* Primary Blue Button */
         #btn-back {
             display: none;
-            /* Controlled by JavaScript */
             background-color: #2563eb;
             color: #ffffff;
             box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
@@ -121,7 +127,6 @@
             transform: translateY(-2px);
         }
 
-        /* Info Button Hidden if no URL */
         #btn-info-container {
             display: none;
             width: 100%;
@@ -140,7 +145,6 @@
             color: #f1f5f9;
         }
 
-        /* Info Pill Panel */
         #more-info {
             display: none;
             width: 100%;
@@ -156,15 +160,8 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: scale(0.98) translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .info-row {
@@ -174,42 +171,25 @@
             font-size: 13px;
         }
 
-        .info-row:last-child {
-            margin-bottom: 0;
-        }
-
-        .label {
-            color: #475569;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .value {
-            color: #38bdf8;
-            font-family: monospace;
-            word-break: break-all;
-        }
-
-        .footer {
-            margin-top: 50px;
-            font-size: 10px;
-            color: #334155;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            font-weight: 800;
-        }
+        .label { color: #475569; font-weight: 700; text-transform: uppercase; }
+        .value { color: #38bdf8; font-family: monospace; word-break: break-all; }
+        .footer { margin-top: 50px; font-size: 10px; color: #334155; text-transform: uppercase; letter-spacing: 4px; font-weight: 800; }
     </style>
 </head>
 
 <body>
-
     <div class="container">
         <div class="logo-wrapper">
             <img src="https://raw.githubusercontent.com/SirSnoopsiee/Swiftblocker/refs/heads/main/SwiftBlockerAssets/swiftlogo(notext).png" alt="SwiftBlocker" class="logo" onerror="this.style.display='none'">
         </div>
 
-        <h1>Restricted</h1>
-        <p class="description">Access to this page is blocked, Please check with your administrator if you believe this is an error.</p>
+        <div class="status-pill">
+            <h1>Restricted</h1>
+        </div>
+
+        <p class="description-pill">
+            Access to <span id="display-url" class="url-target">this site</span> is blocked. Please check with your administrator if you believe this is an error.
+        </p>
 
         <div class="btn-stack">
             <button id="btn-back" class="pill-btn" onclick="window.history.back()">
@@ -226,7 +206,7 @@
         <div id="more-info">
             <div class="info-row">
                 <span class="label">Blocked URL:</span>
-                <span class="value" id="url-display">N/A</span>
+                <span class="value" id="url-details">N/A</span>
             </div>
             <div class="info-row">
                 <span class="label">List</span>
@@ -234,9 +214,7 @@
             </div>
         </div>
 
-        <div class="footer">
-
-        </div>
+        <div class="footer"></div>
     </div>
 
     <script>
@@ -246,25 +224,37 @@
             info.style.display = isHidden ? 'block' : 'none';
         }
 
+        function sanitize(text) {
+            const element = document.createElement('div');
+            element.textContent = text;
+            return element.innerHTML;
+        }
+
         window.onload = function() {
-            // 1. Hide "Go Back" if there's no history (new tab)
+            
             const backBtn = document.getElementById('btn-back');
             if (window.history.length > 1) {
                 backBtn.style.display = 'inline-flex';
             }
 
-            // 2. Hide "More Info" if no URL parameter is found
+            
             try {
                 const params = new URLSearchParams(window.location.search);
-                const blockedUrl = params.get('url');
+                const rawUrl = params.get('url');
 
-                if (blockedUrl && blockedUrl.trim() !== "") {
-                    // XSS Protection: use textContent
-                    document.getElementById('url-display').textContent = blockedUrl;
+                if (rawUrl && rawUrl.trim() !== "") {
+                    
+                    const cleanUrl = rawUrl.replace(/^https?:\/\//, ''); 
+                    
+                    document.getElementById('display-url').textContent = cleanUrl;
+                    document.getElementById('url-details').textContent = rawUrl;
+                    
+                    
                     document.getElementById('btn-info-container').style.display = 'flex';
                 }
-            } catch (e) {
-                console.error("UI Error:", e);
+            } catch (err) {
+                console.error("UI Logic Error:", err);
+                document.getElementById('display-url').textContent = "the requested page";
             }
         };
     </script>
